@@ -1,0 +1,16 @@
+{
+  "name": "pstack-t3",
+  "private": true,
+  "type": "module",
+  "description": "Generates a T3 Code harness tree of pstack and links its launchers for Claude and Codex.",
+  "scripts": {
+    "sync": "sh scripts/sync-upstream.sh",
+    "build": "node scripts/build.mjs --upstream .upstream",
+    "install-skills": "node scripts/build.mjs --upstream .upstream --link",
+    "check": "node scripts/build.mjs --upstream .upstream --check",
+    "test": "PSTACK_UPSTREAM=.upstream node --test test/*.test.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
