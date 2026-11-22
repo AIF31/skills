@@ -66,12 +66,13 @@ Recheck the candidate tip, worktree status, and stashes immediately before remov
 For each spent candidate:
 
 1. `git worktree remove <path>` for each spent worktree, then `git worktree prune`.
-2. `git branch -d <branch>` for each spent branch. A squash-merged branch fails `-d`; use `-D` only for branches proven spent by the PR-tip rule. If `-d` refuses any other branch, hold it and report the refusal.
+2. `git branch -d <branch>` for each spent branch.
+3. Force deletion is the user's to run. A spent branch that `-d` refuses (squash-merged, or merged after a remote rebase) goes on a **force list** with the rule that proved it spent and its tip SHA. Print one `git branch -D <branch> ...` command covering the force list for the user to run.
 
 Remote branches are outward-facing: list any `origin/*` outside the keep set with its PR state and ask before running `git push origin --delete`.
 
-Done when `git worktree list` and `git branch` show only the keep set plus the held list.
+Done when `git worktree list` and `git branch` show only the keep set, the held list, and the force list.
 
 ## 4. Report
 
-Report the default branch synchronization result. List removed worktrees (path and branch), deleted branches, the held list with reasons, and any remote branches awaiting a decision. Note that T3 Code or other tools' threads bound to a removed worktree lose their checkout. Leave untracked files in the main checkout untouched and mention them.
+Report the default branch synchronization result. List removed worktrees (path and branch), deleted branches, the held list with reasons, the force list with its proving rule and tip SHA followed by the printed `git branch -D` command, and any remote branches awaiting a decision. Note that T3 Code or other tools' threads bound to a removed worktree lose their checkout. Leave untracked files in the main checkout untouched and mention them.
