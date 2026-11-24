@@ -4,11 +4,11 @@ Read for a document that needs checked source text or a faithful conversion of a
 
 ## Extract and preserve
 
-Invoke `$mineru` and read the installed [MinerU skill](%USERPROFILE%/.agents/skills/mineru/SKILL.md) and current CLI help/version before execution. On a restricted Windows runner, a launcher failure such as `Access is denied` or `No Python at ...` can reflect sandbox visibility. Retry the read-only version probe through the host approval mechanism before diagnosing a broken installation; record whether that probe succeeds. A successful host probe establishes the runtime for subsequent approved MinerU commands. Use local normal-quality parsing for PDFs/scans; native Office/HTML/EPUB routes use their supported local format/tier. Preserve every requested page/slide/section, including speaker notes, tables, and media. A PDF export of a PPTX has its own page map and does not replace the original deck's identity.
+Use the `mineru` skill (`$mineru` in Codex, `/mineru` in Claude Code) and read its installed `SKILL.md` (`~/.agents/skills/mineru/SKILL.md`; Claude Code reads it through `~/.claude/skills/mineru/`) and current CLI help/version before execution. In a sandboxed runner, a launcher failure can reflect sandbox visibility rather than a broken install: `Access is denied` or `No Python at ...` on Windows, or a permission or socket error under `~/.mineru` on Linux and macOS. Retry the read-only version probe through the host approval mechanism before diagnosing a broken installation; record whether that probe succeeds. A successful host probe establishes the runtime for subsequent approved MinerU commands. Use local normal-quality parsing for PDFs/scans; native Office/HTML/EPUB routes use their supported local format/tier. Preserve every requested page/slide/section, including speaker notes, tables, and media. A PDF export of a PPTX has its own page map and does not replace the original deck's identity.
 
 For a complete PDF, the command shape is:
 
-```powershell
+```sh
 mineru parse '<absolute-source.pdf>' --pages all --output '<job>/extraction.md' --json
 ```
 
@@ -34,7 +34,7 @@ Known extraction faults from the pilot include lost primes/overbars, `×` substi
 
 Run the existing checker on a math-bearing candidate:
 
-```powershell
+```sh
 node '00-System/Scripts/check-math.js' '<job>/candidate.md'
 ```
 
