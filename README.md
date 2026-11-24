@@ -6,7 +6,7 @@ Created in [T3 Code](https://t3.codes).
 
 - [pstack for T3 Code](t3-code/pstack-t3/README.md): adapted skills, model profile, installer, and review record.
 - [Git skills](git/README.md): `git-clean`, which prunes spent branches and worktrees, for Codex and Claude Code.
-- [manim-animations](manim-animations/SKILL.md) covers authoring, rendering, and checking Manim Community scenes.
+- [manim-animations](manim-animations/SKILL.md) covers authoring, rendering, and checking Manim Community scenes. Install for Codex and Claude Code by linking `~/.agents/skills/manim-animations` to this folder and `~/.claude/skills/manim-animations` to that link.
 
 ## Maestría skills
 

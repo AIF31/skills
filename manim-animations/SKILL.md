@@ -33,10 +33,10 @@ description: Use when writing, editing, rendering, or debugging Python animation
 
 - Use `manim render -ql <file> <SceneName>` through the chosen environment for a fast motion check. Use `-s` to save only the final frame as PNG. Use `-p` when opening the output in a viewer is part of the task.
 - Manim Community 0.22.1 loads `manim.cfg` from the render working directory. Pass `--config_file PATH` to select a specific config, and use `--media_dir PATH` for isolated output. [Configuration source](https://docs.manim.community/en/stable/_modules/manim/_config/utils.html#config_file_paths) · [Output settings](https://docs.manim.community/en/stable/tutorials/output_and_config.html)
-- Before every deliverable render, run the layout lint from the scene's folder until it reports 0 issues:
+- Before every deliverable render, run the layout lint from the scene's folder, with the chosen environment's Python, until it reports 0 issues. `SKILL_DIR` is the folder that holds this `SKILL.md`, wherever your agent loaded it from. With the `~/manimations` project:
 
   ~~~bash
-  uv run --project "$HOME/manimations" --locked python "$HOME/.claude/skills/manim-animations/scripts/layout_check.py" scene.py SceneName
+  uv run --project "$HOME/manimations" --locked python "$SKILL_DIR/scripts/layout_check.py" scene.py SceneName
   ~~~
 
   It dry-runs the scene and lists, with timestamps, text that leaves the frame, overlaps other text, or crowds the title. It sees text boxes only, so also sample a frame at the end of every section (just before each wipe) and look for labels crossing curves, axes, arrows or moving objects.
