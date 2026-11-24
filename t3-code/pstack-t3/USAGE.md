@@ -12,7 +12,7 @@ Personal T3 adaptation of pstack 0.15.36 for Codex and Claude. Includes 58 skill
 - `PLAN.md`: the original integration design and its revision history.
 - `REVIEW.md`: Sol-medium findings, resolution, routing scenarios, and validation limits.
 
-The generated bundle is a checked-in snapshot of the installation at `~/.agents/pstack-t3`. Its absolute runtime pointers name that installation on the author's machine. It is reference material in this repository, not a second installation. Rebuild using the steps below on another machine or when changing paths. Edit templates and the generator rather than generated files.
+The generated bundle is a checked-in snapshot of the installation at `~/.agents/pstack-t3`. Its runtime pointers name that installation on the author's machine, with the home directory written as `~`; the generator writes absolute paths. It is reference material in this repository, not a second installation. Rebuild using the steps below on another machine or when changing paths. Edit templates and the generator rather than generated files.
 
 ## Model policy
 
@@ -33,7 +33,7 @@ Explicit per-task model instructions can override the standing review policy, as
 Requires Node.js 20 or newer, Git, and T3 with the configured Codex/Claude models available.
 
 ```sh
-cd pstack-t3
+cd t3-code/pstack-t3
 npm run sync
 npm test
 npm run install-skills
