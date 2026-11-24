@@ -1,6 +1,6 @@
 # pstack for T3 Code
 
-Personal T3 adaptation of pstack 0.15.36 for Codex and Claude. Includes 58 skills, 23 router playbooks, and 32 user-facing `pstack-*` launchers. Upstream engineering methods are preserved; T3 owns agent routing, worktrees, completion wakes, and PR watches.
+Personal T3 adaptation of pstack 0.15.48 for Codex and Claude. Includes 59 skills, 22 router playbooks, and 33 user-facing `pstack-*` launchers. Upstream engineering methods are preserved; T3 owns agent routing, worktrees, completion wakes, and PR watches.
 
 ## Contents
 
@@ -57,6 +57,7 @@ The installer generates `~/.agents/pstack-t3` and keeps managed links in `~/.age
 
 - `$pstack-poteto-mode <goal and completion check>` selects a rigorous playbook.
 - `$pstack-how <question>` inspects code and explains it.
+- `$pstack-reframe <description>` teaches the expert terms for what you are building and rewrites your description with them.
 - `$pstack-interrogate <diff or commit>` runs the configured review panel.
 - `$pstack-poteto-help <question>` explains the T3 integration.
 

@@ -156,3 +156,27 @@ test("operational model instructions no longer offer unavailable Cursor slugs or
   assert.doesNotMatch(body(result, "skills/poteto-mode/SKILL.md"), /run_in_background: true|up to max/);
   assert.ok(body(result, "skills/poteto-mode/SKILL.md").includes("Keep the evidence."));
 });
+
+test("pstack 0.15.48 wording routes through the T3 Model policy and any Cursor slug is replaced", () => {
+  const upstream = fixture();
+  put(upstream, "pstack/skills/how/SKILL.md", '---\nname: how\ndescription: How.\n---\n\n# How\n\nSpawn one Task subagent with `subagent_type: generalPurpose` and `readonly: true` that explores and explains in one pass. Give it the user\'s question and this brief:\n\n> Explain it.\n');
+  put(upstream, "pstack/skills/arena/SKILL.md", '---\nname: arena\ndescription: Arena.\n---\n\n# Arena\n\n3. Pick the runners from the `arena runners` line, by default `gemini-4-neon-xhigh`. If the Task tool rejects a slug, use the nearest valid slug.\n');
+  put(upstream, "pstack/skills/poteto-mode/playbooks/bug-fix.md", 'Delegate using your configured bug-fix model (default `claude-opus-5-5-xhigh-fast`).\n');
+  const result = build({ upstream, ...scratch() });
+  assert.deepEqual(result.problems, []);
+  const how = body(result, "skills/how/SKILL.md");
+  assert.match(how, /T3 Model policy[\s\S]*`how explainer`/);
+  assert.doesNotMatch(how, /Task subagent/);
+  assert.ok(how.includes("> Explain it."));
+  const arena = body(result, "skills/arena/SKILL.md");
+  assert.match(arena, /T3 Model policy/);
+  assert.doesNotMatch(arena, /gemini-4|nearest valid slug/);
+  assert.ok(body(result, "skills/poteto-mode/playbooks/bug-fix.md").includes("(fallback per T3 Model policy)"));
+});
+
+test("fails when a skill still starts agents without the T3 Model policy", () => {
+  const upstream = fixture();
+  put(upstream, "pstack/skills/how/SKILL.md", '---\nname: how\ndescription: How.\n---\n\n# How\n\nLaunch a helper subagent in some new wording.\n');
+  const result = build({ upstream, ...scratch() });
+  assert.ok(result.problems.some((problem) => problem.includes("skills/how/SKILL.md starts agents without the T3 Model policy")));
+});

@@ -76,6 +76,10 @@ const T3_TERMS = [
 const TERMS = [...UPSTREAM_TERMS, ...T3_TERMS];
 const ROUTE_KEY = "Run another pstack skill";
 const SKILL_NAME = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+// A Cursor model slug in backticks, such as `claude-opus-5-5-xhigh-fast`.
+const MODEL_SLUG = /`(?:claude|gemini|grok|gpt)-[a-z0-9][a-z0-9.-]*`/;
+// Skills whose spawn instructions must route through the T3 Model policy.
+const POLICY_SKILLS = ["how", "why", "reflect", "architect", "arena", "swarm"];
 
 // Skills in the README's table that get no launcher, with the reason. They stay readable in the tree.
 const UNEXPOSED = {
@@ -206,24 +210,25 @@ function t3Markdown(path, source, { outDir, models, skills }) {
 
   const policy = `Resolve provider, model, effort, and unavailable choices through [T3 Model policy](${outDir}/${ADAPTER}#model-policy) and \`${resolve(models)}\`. `;
   const routing = {
-    how: ["Every spawn is a Task subagent", policy + "Explorers use `how explorer`; explanatory writers use `documentation` / `how explainer`. Exploration is read-only."],
+    how: [/^(?:Every spawn is a Task subagent|Spawn one Task subagent)/, policy + "Start one read-only `how explainer` agent that explores and explains in one pass. Give it the user's question and this brief:"],
     why: ["Each spawn below names a role line", policy + "Use `why investigators` for probes and `why synthesizer` for investigative synthesis."],
     reflect: ["Each reviewer and the synthesizer name a role line", policy + "Use the role table below for these learning-analysis lenses; independent artifact reviews use the reciprocal review policy."],
     architect: ["Take the runners from", policy + "Use the exact `architect runners` list. One agent per entry; T3 owns each writing candidate's worktree."],
   };
   if (routing[skill]) {
     const [prefix, replacement] = routing[skill];
-    source = source.split("\n\n").map((paragraph) => paragraph.startsWith(prefix) ? replacement : paragraph).join("\n\n");
+    const matches = (paragraph) => (typeof prefix === "string" ? paragraph.startsWith(prefix) : prefix.test(paragraph));
+    source = source.split("\n\n").map((paragraph) => matches(paragraph) ? replacement : paragraph).join("\n\n");
   }
   if (skill === "arena") {
-    source = source.replace(/^3\. Pick the runners\..*$/m, "3. " + policy + "Use the exact `arena runners` list, one candidate per entry. Confirm model availability before launching; preserve the configured count.");
+    source = source.replace(/^3\. Pick the runners\b.*$/m, "3. " + policy + "Use the exact `arena runners` list, one candidate per entry. Confirm model availability before launching; preserve the configured count.");
     source = source.replace(/^After all Phase B candidates complete,.*$/m, "After all Phase B candidates complete, " + policy + "select one eligible entry from `arena cross-judge pool` in order, from a family other than the coordinator's. The read-only judge sees the rubric and candidate paths, scores criteria, and recommends a base. Start it only after candidates stop writing. Follow its completion wake; do other independent work while it runs.");
   }
   if (skill === "swarm") source = source.replace(/^3\. Pick the worker model.*$/m, "3. " + policy + "Use `swarm workers`, unless the user explicitly assigns models per race arm. Keep worker count scoped to the task.");
 
   if (!path.includes("/references/")) source = source
-    .replace(/\(default `(?:grok-4\.7-xhigh-fast|claude-opus-5-5-xhigh)`\)/g, "(fallback per T3 Model policy)")
-    .replace(/`(?:grok-4\.7-xhigh-fast|claude-opus-5-5-xhigh)`/g, "`inherit-parent` (only when no role or worker default is saved)");
+    .replace(new RegExp(`\\(default ${MODEL_SLUG.source}\\)`, "g"), "(fallback per T3 Model policy)")
+    .replace(new RegExp(MODEL_SLUG.source, "g"), "`inherit-parent` (only when no role or worker default is saved)");
   source = source
     .replaceAll("~/.cursor/rules/pstack-models.mdc", resolve(models))
     .replaceAll("pstack-models.mdc", resolve(models))
@@ -309,6 +314,19 @@ export function build({ upstream, out, models }) {
   for (const [path, entry] of files) {
     if (!path.endsWith(".md") || path === ADAPTER) continue;
     entry.bytes = Buffer.from(t3Markdown(path, entry.bytes.toString("utf8"), { outDir, models, skills: exposed }));
+  }
+
+  // Upstream rewording can slip past the rewrites above; fail rather than ship Cursor model choices.
+  for (const [path, entry] of files) {
+    if (!path.startsWith("skills/") || !path.endsWith(".md") || path.includes("/references/")) continue;
+    const slug = entry.bytes.toString("utf8").match(MODEL_SLUG);
+    if (slug) problems.push(`${path} still names Cursor model ${slug[0]}`);
+  }
+  for (const skill of POLICY_SKILLS) {
+    const source = files.get(`skills/${skill}/SKILL.md`)?.bytes.toString("utf8");
+    if (source && /\bspawn|subagent|runners/i.test(source) && !source.includes("T3 Model policy")) {
+      problems.push(`skills/${skill}/SKILL.md starts agents without the T3 Model policy`);
+    }
   }
 
   const resolveLink = (from, href) => {

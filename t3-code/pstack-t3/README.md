@@ -2,14 +2,14 @@
 
 ## Summary
 
-Adapt pstack 0.15.36 to T3 Code with a configured worker default, documentation model, reasoning budget, and independent review policy.
+Adapt pstack 0.15.48 to T3 Code with a configured worker default, documentation model, reasoning budget, and independent review policy.
 
 ```text
 pstack-t3/
 ├── adapter/                 # T3 model policy and setup/help templates
 ├── scripts/                 # generator, installer, and upstream sync
 ├── test/                    # generator regression tests
-├── generated/               # 58 adapted skills, 23 playbooks, 32 launchers
+├── generated/               # 59 adapted skills, 22 playbooks, 33 launchers
 ├── config/pstack-models.md  # approved personal model profile
 ├── CONFIGURATION.md         # setup decisions
 ├── REVIEW.md                # Sol-medium findings and resolution
@@ -26,5 +26,7 @@ See [installation and usage](USAGE.md), the [complete skill mapping](generated/M
   **After:** T3 setup/help templates and model policy are generated directly; the approved profile records 21 roles; Arena reports a missing eligible judge and asks for a choice.
 - **Before:** regression checks exposed missing T3 model-path substitution and operational Cursor model defaults.
   **After:** all 12 generator tests pass, including generation from real upstream inputs. The bundled files match the verified installation; all 32 launcher metadata files and 64 managed links validated.
+- **Before:** pstack 0.15.48 reworded `how` and `arena`, and the generator's exact-text rewrites silently missed them, leaving Cursor model slugs and no T3 model policy.
+  **After:** the generator replaces any Cursor model slug and fails the build when a skill that starts agents lacks the T3 Model policy. All 14 tests pass against 0.15.48; the installation and 66 managed links check clean.
 - **Before:** the integration had no completed review at the requested Sol-medium setting.
   **After:** [Sol 6.1 medium review](REVIEW.md) checked the frozen core snapshot and routing scenarios. Its one stale Arena note was corrected and the generator tests rerun. The review did not execute every playbook or application workflow.

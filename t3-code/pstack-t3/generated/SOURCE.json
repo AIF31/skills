@@ -1,13 +1,14 @@
 {
   "generator": "pstack-t3",
-  "pstackVersion": "0.15.36",
-  "upstreamCommit": "4dd1d05818d19792e7cd6e818f1667f95f7e1dbe",
+  "pstackVersion": "0.15.48",
+  "upstreamCommit": "ca782ed8b3c2c521cead8e1720d55c3a5dbf2347",
   "adapterSha256": "72b1e97d942b83ff58bcb67ac208a343947c5166f8c3e86cb346a20b7dd4b0a8",
   "launchers": [
     "pstack-poteto-mode",
     "pstack-poteto-help",
     "pstack-in-your-own-words",
     "pstack-sharpen",
+    "pstack-reframe",
     "pstack-how",
     "pstack-why",
     "pstack-recall",
