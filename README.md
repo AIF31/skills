@@ -16,3 +16,4 @@ Maestría’s `.claude/skills/` entries point to `.agents/skills/`. The two vaul
 - [vault-ingest](obsidian/vault-ingest/SKILL.md) imports selected material into Maestría. Source folder in Maestría is `copilot/skills/vault-ingest/`.
 - [vault-connect](obsidian/vault-connect/SKILL.md) links checked sources to concept notes. Source folder in Maestría is `copilot/skills/vault-connect/`.
 - [obsidian-cli](obsidian/obsidian-cli/SKILL.md) works with a running Obsidian app. It is adapted from Maestría’s `.agents/skills/obsidian-cli/`.
+- [latex-report](latex-report/SKILL.md) builds and verifies AMCS-215 homework reports from the vault’s Markdown and LaTeX template. The Python verifier is bundled with the skill.
